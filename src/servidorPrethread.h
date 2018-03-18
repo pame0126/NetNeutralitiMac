@@ -1,0 +1,7 @@
+
+#ifndef SERVIDORPRETHREAD_H
+#define SERVIDORPRETHREAD_H
+
+#define SALIR "EXIT"
+
+#endif
