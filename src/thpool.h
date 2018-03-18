@@ -1,9 +1,5 @@
-/**********************************
- * @author      Johan Hanssen Seferidis
- * License:     MIT
- *
- **********************************/
-
+/**Extraido de https://github.com/Pithikos/C-Thread-Pool
+ * */
 #ifndef _THPOOL_
 #define _THPOOL_
 

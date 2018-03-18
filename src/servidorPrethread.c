@@ -183,7 +183,7 @@ int main(int argc, char **argv)
 				break;
 				
 			case 'p'://puerto
-			/*
+			/*  Falla la lectura del puerto -> NULL
 				//strcpy(puerto,optarg);
 				printf("%s\n", optarg);
 				//printf("%d %s %s  %s\n", cant_hilos, priori_serv, recursos, puerto);
@@ -197,7 +197,8 @@ int main(int argc, char **argv)
 	}
 	//iniciar el servidor de prethreads
 	inicializar_servidor_prethreads(cant_hilos, priori_serv, recursos, "6667");
-	printf("%d  %s  %s  %s\n",cant_hilos, priori_serv, recursos, "puerto");
+	
+	
 	/* Liberar espacios */
 	free(priori_serv);
 	free(recursos);
