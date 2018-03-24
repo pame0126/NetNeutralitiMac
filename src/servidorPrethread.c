@@ -37,11 +37,11 @@ char* toUpCharString(char*str)
 void procesar_mensaje(char*msj, char*accion, char* priori)
 {
 	char*token;
-	
+	//Accion
 	token = strtok(msj, "|");
 	strcpy(accion, token);
 	accion = toUpCharString(accion);
-	
+	//Prioridad
 	msj = msj + (strlen(token)+1);
 	strcpy(priori, msj);
 	priori = toUpCharString(priori);
@@ -75,7 +75,7 @@ void asignar_hilo_a_hamburgesa(char*priori, threadpool hilos)
 /**
  * Inicia el servidor cargado con hilos no activos
  * */
-void inicializar_servidor_prethreads(int cant_hilos, char*prioridad_serv, char*recursos, char*puerto)
+void inicializar_servidor_prethreads(int cant_hilos, char*recursos, char*puerto)
 {
 	/* Iniciar el servidor */	
 	struct addrinfo hints;
@@ -117,6 +117,8 @@ void inicializar_servidor_prethreads(int cant_hilos, char*prioridad_serv, char*r
 	char* priori;
 	char* cant_h;
 	
+	char salir[5];
+	
 	int bandera = 1;
 	
 	while (bandera){
@@ -130,10 +132,6 @@ void inicializar_servidor_prethreads(int cant_hilos, char*prioridad_serv, char*r
 			
 			procesar_mensaje(msj, accion, priori);
 			
-			if(strcmp(priori,SALIR) == 0)
-			{
-				bandera = 0;
-			}
 			if(strcmp(accion,COCINAR) == 0)//si es el mensaje COCINA
 			{
 				asignar_hilo_a_hamburgesa(priori,hilos);
@@ -163,8 +161,9 @@ int main(int argc, char **argv)
 	char*priori_serv = (char*)calloc(10, sizeof(char));
 	char*recursos = (char*)calloc(100, sizeof(char));
 	char*puerto = (char*)calloc(5, sizeof(char));
+
 	
-	while((opcion = getopt(argc,argv,"n:P:r:p")) != -1)
+	while((opcion = getopt(argc,argv,"n:r:p:nrp")) != -1)
 	{
 		
 		switch (opcion)
@@ -172,22 +171,13 @@ int main(int argc, char **argv)
 			case 'n'://cantidad de hilos
 				cant_hilos = atoi(optarg);
 				break;
-				
-			case 'P'://Prioridad del servidor
-				strcpy(priori_serv,optarg);
-				priori_serv = toUpCharString(priori_serv);
-				break;
-				
+			
 			case 'r'://Recursos, carpeta de imagenes
 				strcpy(recursos,optarg);
 				break;
 				
 			case 'p'://puerto
-			/*  Falla la lectura del puerto -> NULL
-				//strcpy(puerto,optarg);
-				printf("%s\n", optarg);
-				//printf("%d %s %s  %s\n", cant_hilos, priori_serv, recursos, puerto);
-			*/
+			strcpy(puerto,optarg);
 				break;
 				
 			default:
@@ -196,8 +186,8 @@ int main(int argc, char **argv)
 		}
 	}
 	//iniciar el servidor de prethreads
-	inicializar_servidor_prethreads(cant_hilos, priori_serv, recursos, "6667");
-	
+	inicializar_servidor_prethreads(cant_hilos, recursos, puerto);
+	//printf("%d %s %s\n", cant_hilos, recursos, puerto);
 	
 	/* Liberar espacios */
 	free(priori_serv);
