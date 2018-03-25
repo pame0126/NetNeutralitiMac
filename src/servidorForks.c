@@ -7,15 +7,49 @@
 #include <unistd.h>
 #include <ctype.h>
 #include <getopt.h>
+#include <errno.h>
+#include <sys/wait.h>
 
 #include "hamburgesa.h"
-#include "servidorPrethread.h"
-#include "thpool.h"
-
 
 #define PUERTO "6667"
 #define BACKLOG 5			// Define cuantas conexiones vamos a mantener pendientes al mismo tiempo
 #define PACKAGESIZE 1024	// Define cual va a ser el size maximo del paquete a enviar
+
+
+
+void init_forks(int cant)
+{
+	pid_t pid;
+	int x;
+
+	for(x=1;x<=cant;x++)
+	{
+		pid=fork(); 
+	}
+}
+
+
+void asignar_fork_a_hamburgesa(char*priori)
+{
+	if(strcmp(priori, ALTA) == 0)
+	{
+		cocinar_hamburgesa_alta();
+		
+	}
+	else if(strcmp(priori, MEDIA) == 0)
+	{
+		cocinar_hamburgesa_media();
+	}
+	else if(strcmp(priori, BAJA) == 0)
+	{
+		cocinar_hamburgesa_baja();
+	}
+	else
+	{
+		printf("ERROR: No es una configuración valida.\n Debe ser ALTA  MEDIA  BAJA\n");
+	}
+}
 
 
 char* toUpCharString(char*str)
@@ -47,35 +81,10 @@ void procesar_mensaje(char*msj, char*accion, char* priori)
 	priori = toUpCharString(priori);
 }
 
-void asignar_hilo_a_hamburgesa(char*priori, threadpool hilos)
-{
-	if(strcmp(priori, ALTA) == 0)
-	{
-		thpool_add_work(hilos, (void*)cocinar_hamburgesa_alta, NULL);
-		thpool_resume(hilos);
-	}
-	else if(strcmp(priori, MEDIA) == 0)
-	{
-		thpool_add_work(hilos, (void*)cocinar_hamburgesa_media, NULL);
-		thpool_resume(hilos);
-	}
-	else if(strcmp(priori, BAJA) == 0)
-	{
-		thpool_add_work(hilos, (void*)cocinar_hamburgesa_baja, NULL);
-		thpool_resume(hilos);
-	}
-	else
-	{
-		printf("ERROR: No es una configuración valida.\n Debe ser ALTA  MEDIA  BAJA\n");
-		printf("%s\n", priori);
-		printf("Hilos activos %d\n",thpool_num_threads_working(hilos));
-	}
-}
-
 /**
  * Inicia el servidor cargado con hilos no activos
  * */
-void inicializar_servidor_prethreads(int cant_hilos, char*recursos, char*puerto)
+void inicializar_servidor_forks(int cant_forks, char*recursos, char*puerto)
 {
 	/* Iniciar el servidor */	
 	struct addrinfo hints;
@@ -100,26 +109,22 @@ void inicializar_servidor_prethreads(int cant_hilos, char*recursos, char*puerto)
 	struct sockaddr_in addr;			// Esta estructura contendra los datos de la conexion del cliente. IP, puerto, etc.
 	socklen_t addrlen = sizeof(addr);
 
-	//Espera conexion con el cliente
-	//int socketCliente = accept(listenningSocket, (struct sockaddr *) &addr, &addrlen);
-	
-	//aqui van los hilos
-	threadpool hilos = thpool_init(cant_hilos);
 
 	/* Preparando para escuchar al cliente */
 
 	char msj[PACKAGESIZE];
 	int status = 1;		// Estructura que manjea el status de los recieve.
-
+	
 	char*accion;
 	char* priori;
 	char* cant_h;
 	
 	char salir[5];
-	int socketCliente;
-	int bandera = 1;
 	
-	printf("Esperando mensajes:\n");
+	int bandera = 1;
+	int socketCliente;
+	//aqui van los forks creados
+	init_forks(cant_forks);
 	
 	while (bandera){
 		status = recv(socketCliente, (void*) msj, PACKAGESIZE, 0);
@@ -134,7 +139,7 @@ void inicializar_servidor_prethreads(int cant_hilos, char*recursos, char*puerto)
 			
 			if(strcmp(accion,COCINAR) == 0)//si es el mensaje COCINA
 			{
-				asignar_hilo_a_hamburgesa(priori,hilos);
+				asignar_fork_a_hamburgesa(priori);
 			}
 			/*Libera espacios*/
 			free(accion);
@@ -148,7 +153,8 @@ void inicializar_servidor_prethreads(int cant_hilos, char*recursos, char*puerto)
 	close(socketCliente);
 	close(listenningSocket);
 	/* Cerramos el socket del Cliente y Servidor */
-	thpool_destroy(hilos);
+	//thpool_destroy(hilos);
+	
 }
 
 
@@ -157,7 +163,7 @@ int main(int argc, char **argv)
 	/* Leer entrada */
 	
 	int opcion;
-	int cant_hilos = 0;
+	int cant_forks = 0;
 	char*priori_serv = (char*)calloc(10, sizeof(char));
 	char*recursos = (char*)calloc(100, sizeof(char));
 	char*puerto = (char*)calloc(5, sizeof(char));
@@ -169,7 +175,7 @@ int main(int argc, char **argv)
 		switch (opcion)
 		{
 			case 'n'://cantidad de hilos
-				cant_hilos = atoi(optarg);
+				cant_forks = atoi(optarg);
 				break;
 			
 			case 'r'://Recursos, carpeta de imagenes
@@ -186,8 +192,9 @@ int main(int argc, char **argv)
 		}
 	}
 	//iniciar el servidor de prethreads
-	inicializar_servidor_prethreads(cant_hilos, recursos, puerto);
-	//printf("%d %s %s\n", cant_hilos, recursos, puerto);
+	inicializar_servidor_forks(cant_forks, recursos, puerto);
+	//printf("%d %s %s\n", cant_forks, recursos, puerto);
+	
 	
 	/* Liberar espacios */
 	free(priori_serv);
