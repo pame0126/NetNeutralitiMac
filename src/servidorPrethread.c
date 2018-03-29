@@ -12,6 +12,7 @@
 #include "servidorPrethread.h"
 #include "thpool.h"
 #include "interfaz.h"
+#include "archivos.h"
 
 #define PUERTO "6667"
 #define BACKLOG 5			// Define cuantas conexiones vamos a mantener pendientes al mismo tiempo
@@ -51,18 +52,24 @@ void asignar_hilo_a_hamburgesa(char*priori, threadpool hilos)
 {
 	if(strcmp(priori, ALTA) == 0)
 	{
+		//escribir_fichero("Cocinando hamburgesa.....            (Priori ALTO)");
 		thpool_add_work(hilos, (void*)cocinar_hamburgesa_alta, NULL);
 		thpool_resume(hilos);
+		//escribir_fichero("Listo!!!....");
 	}
 	else if(strcmp(priori, MEDIA) == 0)
 	{
+		//escribir_fichero("Cocinando hamburgesa.....            (Priori MEDIO)");
 		thpool_add_work(hilos, (void*)cocinar_hamburgesa_media, NULL);
 		thpool_resume(hilos);
+		//escribir_fichero("Listo!!!....");
 	}
 	else if(strcmp(priori, BAJA) == 0)
 	{
+		//escribir_fichero("Cocinando hamburgesa.....            (Priori BAJO)");
 		thpool_add_work(hilos, (void*)cocinar_hamburgesa_baja, NULL);
 		thpool_resume(hilos);
+		//escribir_fichero("Listo!!!....");
 	}
 	else
 	{
@@ -188,7 +195,6 @@ int main(int argc, char **argv)
 	}
 	//iniciar el servidor de prethreads
 	inicializar_servidor_prethreads(cant_hilos, recursos, puerto);
-	//printf("%d %s %s\n", cant_hilos, recursos, puerto);
 	
 	/* Liberar espacios */
 	free(priori_serv);

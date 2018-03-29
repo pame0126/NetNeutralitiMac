@@ -11,6 +11,8 @@
 #include <sys/wait.h>
 
 #include "hamburgesa.h"
+#include "interfaz.h"
+#include "thpool.h"
 
 #define PUERTO "6667"
 #define BACKLOG 5			// Define cuantas conexiones vamos a mantener pendientes al mismo tiempo
@@ -86,6 +88,7 @@ void procesar_mensaje(char*msj, char*accion, char* priori)
  * */
 void inicializar_servidor_forks(int cant_forks, char*recursos, char*puerto)
 {
+
 	/* Iniciar el servidor */	
 	struct addrinfo hints;
 	struct addrinfo *serverInfo;
@@ -123,6 +126,10 @@ void inicializar_servidor_forks(int cant_forks, char*recursos, char*puerto)
 	
 	int bandera = 1;
 	int socketCliente;
+	threadpool hilos = thpool_init(2);
+	thpool_add_work(hilos,(void*)interfaz, recursos);
+	
+	printf("Esperando mensajes:\n");
 	//aqui van los forks creados
 	init_forks(cant_forks);
 	

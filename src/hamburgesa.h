@@ -8,7 +8,7 @@
 #define BAJA  "BAJA"
 
 //Rapidez de las hamburgesas
-#define RAPIDO  5      //5 segundos
+#define RAPIDO  10     //10 segundos
 #define REGULAR 150    //2 minutos y 1/2
 #define LENTO   300    //5 minutos
 

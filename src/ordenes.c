@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <getopt.h>
+#include <unistd.h>
 
 #include "cliente.h"
 #include "hamburgesa.h"
@@ -59,6 +60,7 @@ int main(int argc, char **argv)
 		inicializar_cliente(puerto, ip);
 		envia_orden(mensaje);
 		cerrar_cliente();
+		printf("Se mando orden\n");
 	}
 	else{
 		for(int i = 0;i < procesos;i++){

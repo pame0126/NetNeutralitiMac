@@ -27,24 +27,19 @@ char*leer_fichero(){
   return buffer;
 }
 void escribir_fichero(char*msj){
-	char*buffer = leer_fichero();
+	//char*buffer = leer_fichero();
 	
 	FILE *fd;
 	int c;
 	char dir[]="hamb_mc.txt";
-	fd = fopen(dir, "w+");
+	fd = fopen(dir, "a");
 	
 	while(fd == NULL){
-		fd = fopen(dir, "w+");
+		fd = fopen(dir, "a");
 	}
 	int i = 0;
-	fprintf(fd, "%s%c%s",buffer,'\n', msj);
+	fprintf(fd, "%c%s",'\n', msj);
 	fclose(fd);
 }
 
-//~ int main()
-//~ {
-	//~ char*msj = leer_fichero();
-	//~ printf("%s\n", msj);
-  //~ return 0;
-//~ }
+
