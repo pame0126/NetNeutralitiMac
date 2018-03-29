@@ -55,15 +55,23 @@ int main(int argc, char **argv)
 	strcat(mensaje,prioridad);
 	
 	//se enviara 1 vez si es cliente, si es de Stress sera n veces indicado.
-	for(int i = 0;i < procesos;i++){
+	if(strcmp(argv[0],"./client")==0){
 		inicializar_cliente(puerto, ip);
-	
-		//COCINAR|PRIORIDAD
 		envia_orden(mensaje);
+		cerrar_cliente();
+	}
+	else{
+		for(int i = 0;i < procesos;i++){
+			inicializar_cliente(puerto, ip);
+			envia_orden(mensaje);
+			cerrar_cliente();
+		}	
+		//COCINAR|PRIORIDAD
+		
 	}
 	
 	//sleep(5);
-	cerrar_cliente();
+	
 	free(ip);
 	free(puerto);
 	free(prioridad);

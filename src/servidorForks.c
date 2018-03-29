@@ -161,7 +161,6 @@ void inicializar_servidor_forks(int cant_forks, char*recursos, char*puerto)
 int main(int argc, char **argv)
 {
 	/* Leer entrada */
-	
 	int opcion;
 	int cant_forks = 0;
 	char*priori_serv = (char*)calloc(10, sizeof(char));
@@ -192,7 +191,7 @@ int main(int argc, char **argv)
 		}
 	}
 	//iniciar el servidor de prethreads
-	inicializar_servidor_forks(cant_forks, recursos, puerto);
+	inicializar_servidor_forks(7, "/home/wifuss/Imágenes/Facebook/hamburgesa_img/", "6667");
 	//printf("%d %s %s\n", cant_forks, recursos, puerto);
 	
 	

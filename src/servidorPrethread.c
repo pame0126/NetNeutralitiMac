@@ -11,7 +11,7 @@
 #include "hamburgesa.h"
 #include "servidorPrethread.h"
 #include "thpool.h"
-
+#include "interfaz.h"
 
 #define PUERTO "6667"
 #define BACKLOG 5			// Define cuantas conexiones vamos a mantener pendientes al mismo tiempo
@@ -119,6 +119,7 @@ void inicializar_servidor_prethreads(int cant_hilos, char*recursos, char*puerto)
 	int socketCliente;
 	int bandera = 1;
 	
+	thpool_add_work(hilos,(void*)interfaz, recursos);
 	printf("Esperando mensajes:\n");
 	
 	while (bandera){

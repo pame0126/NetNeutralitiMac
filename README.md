@@ -2,7 +2,7 @@
 Tarea del curso Sistemas Operativos. Simulación del comportamiento del NetNeutrality en un restaurante de comida rápida de hamburguesas.
 
 Los pasos a seguir para realizar hamburgesas son:
- - Ejecutar el servidor de Prethreads.
+ - Ejecutar el servidor de Prethreads junto a la interfaz.
    $ ./prethread-Server -p 6667 -n <num_hilos> -r <path_de_imagenes_animación>
    --> -p : indica el puerto del servidor.
    --> -r : indica la ruta de imagenes que se usara para la animación.
