@@ -1,6 +1,6 @@
 all:
 	gcc archivos.* interfaz.h interfaz.c thpool.h thpool.c hamburgesa.h hamburgesa.c servidorPrethread.h servidorPrethread.c -o prethread-Server -pthread `pkg-config --cflags --libs gtk+-2.0`
-	gcc -o preforked-Server hamburgesa.h hamburgesa.c servidorForks.c
+	gcc -o preforked-Server archivos.* thpool.* interfaz.* hamburgesa.h hamburgesa.c servidorForks.c -pthread `pkg-config --cflags --libs gtk+-2.0`
 	gcc archivos.* hamburgesa.h hamburgesa.c cliente.h cliente.c ordenes.h ordenes.c -o client
 	gcc archivos.* hamburgesa.h hamburgesa.c cliente.h cliente.c ordenes.h ordenes.c -o stress
 	
@@ -8,7 +8,7 @@ all:
 prethread-Server:
 	gcc archivos.* interfaz.h interfaz.c thpool.h thpool.c hamburgesa.h hamburgesa.c servidorPrethread.h servidorPrethread.c -o prethread-Server -pthread `pkg-config --cflags --libs gtk+-2.0`
 preforked-Server:
-	gcc -o preforked-Server hamburgesa.h hamburgesa.c servidorForks.c
+	gcc -o preforked-Server archivos.* thpool.* interfaz.* hamburgesa.h hamburgesa.c servidorForks.c -pthread `pkg-config --cflags --libs gtk+-2.0`
 client:
 	gcc archivos.* hamburgesa.h hamburgesa.c cliente.h cliente.c ordenes.h ordenes.c -o client
 stress:

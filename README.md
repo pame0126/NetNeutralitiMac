@@ -26,3 +26,5 @@ Los pasos a seguir para realizar hamburgesas son:
    --> -h : ip
    --> -c : prioridad (alta/media/baja)
    --> -p : indica el puerto que se conectara.
+
+El servidor de Forks no esta funcionando bien.
